@@ -20,5 +20,8 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "newRecipeApp"
-include(":app")
+include(":app", ":data", ":domain")
+project(":data").projectDir = file("data")
+project(":domain").projectDir = file("domain")
+
  
