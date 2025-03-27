@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.newrecipeapp.components.RecipeCard
 import com.example.newrecipeapp.viewModels.RecipeListViewModel
-import kotlin.getValue
 
 @Composable
 fun RecipeListScreen(viewModel: RecipeListViewModel = hiltViewModel()) {
@@ -18,9 +17,11 @@ fun RecipeListScreen(viewModel: RecipeListViewModel = hiltViewModel()) {
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { padding ->
-        LazyColumn(modifier = Modifier.padding(padding)) {
-            itemsIndexed(recipes) { index, recipe ->
-                RecipeCard(recipe, onClick = { })
+        Column {
+            LazyColumn(modifier = Modifier.padding(padding)) {
+                itemsIndexed(recipes) { index, recipe ->
+                    RecipeCard(recipe, onClick = { })
+                }
             }
         }
     }
