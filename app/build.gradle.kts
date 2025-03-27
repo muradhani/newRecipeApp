@@ -62,6 +62,8 @@ dependencies {
     implementation ("com.squareup.retrofit2:converter-gson:2.11.0")
     implementation ("com.google.dagger:hilt-android:2.56.1")
     kapt ("com.google.dagger:hilt-compiler:2.56.1")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
     implementation(project(":domain"))
     implementation(project(":data"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
