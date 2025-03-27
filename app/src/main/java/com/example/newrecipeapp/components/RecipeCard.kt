@@ -21,6 +21,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.domain.models.RecipeEntity
 
 @Composable
@@ -40,11 +41,11 @@ fun RecipeCard(
     ) {
         Column {
             recipe.imageUrl?.let{ url->
-                Image(
-                    painter  = painterResource(id = R.drawable.sym_contact_card),
-                    modifier = Modifier.fillMaxWidth().height(220.dp),
-                    contentScale = ContentScale.Crop,
+                AsyncImage(
+                    model = url,
                     contentDescription = "Contact Card",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxWidth().height(220.dp)
                 )
             }
             recipe.title?.let { title->
