@@ -19,12 +19,27 @@ class RecipeListViewModel @Inject constructor(
     private val _recipes = MutableStateFlow<List<RecipeEntity>>(emptyList())
     val recipes: StateFlow<List<RecipeEntity>> = _recipes.asStateFlow()
 
+    val query = MutableStateFlow<String>("")
+
     init {
         viewModelScope.launch{
             val result = repository.search(
                 token = "Token 9c8b06d329136da358c2d00e76946b0111ce2c48",
                 page = 1 ,
                 query = "chicken"
+            )
+            _recipes.value = result!!
+        }
+    }
+    fun onQueryChange(query:String){
+        this.query.value = query
+    }
+    fun searchRecipes(query: String){
+        viewModelScope.launch {
+            val result = repository.search(
+                token = "Token 9c8b06d329136da358c2d00e76946b0111ce2c48",
+                page = 1 ,
+                query = query
             )
             _recipes.value = result!!
         }
