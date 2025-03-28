@@ -34,4 +34,14 @@ class RecipeListViewModel @Inject constructor(
     fun onQueryChange(query:String){
         this.query.value = query
     }
+    fun searchRecipes(query: String){
+        viewModelScope.launch {
+            val result = repository.search(
+                token = "Token 9c8b06d329136da358c2d00e76946b0111ce2c48",
+                page = 1 ,
+                query = query
+            )
+            _recipes.value = result!!
+        }
+    }
 }
