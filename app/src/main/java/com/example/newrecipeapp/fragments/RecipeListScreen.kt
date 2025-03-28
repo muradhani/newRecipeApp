@@ -1,9 +1,10 @@
 package com.example.newrecipeapp.fragments
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -11,21 +12,17 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.newrecipeapp.components.RecipeCard
+import com.example.newrecipeapp.components.getAllFoodCategories
 import com.example.newrecipeapp.viewModels.RecipeListViewModel
 
 @Composable
@@ -58,23 +55,31 @@ fun RecipeListScreen(viewModel: RecipeListViewModel = hiltViewModel()) {
                     color = MaterialTheme.colorScheme.primary,
                     shadowElevation = 8.dp
                 ) {
-                    Row (
+                    Column(
                         modifier = Modifier.fillMaxWidth()
-                    ){
-                        // Search Bar
+                    ) {
                         TextField(
                             value = query,
                             onValueChange = { viewModel.onQueryChange(it) },
                             placeholder = { Text("Enter text here") },
-                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
                             label = { Text(text = "Search") },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done),
-                            leadingIcon = {Icon(Icons.Filled.Search, contentDescription = "Search Icon")},
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Text,
+                                imeAction = ImeAction.Done
+                            ),
+                            leadingIcon = {
+                                Icon(
+                                    Icons.Filled.Search,
+                                    contentDescription = "Search Icon"
+                                )
+                            },
                             keyboardActions = KeyboardActions(
                                 onDone = {
-                                    // Handle the event when the "Done" key is pressed
-                                    viewModel.searchRecipes(query) // Example function call (replace with your logic)
-                                    keyboardController?.hide() // ✅ Hides keyboard when "Done" is clicked
+                                    viewModel.searchRecipes(query)
+                                    keyboardController?.hide()
                                 }
                             ),
                             textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface),
@@ -83,7 +88,23 @@ fun RecipeListScreen(viewModel: RecipeListViewModel = hiltViewModel()) {
                                 unfocusedContainerColor = MaterialTheme.colorScheme.surface
                             )
                         )
+
+                        Row(
+                            modifier = Modifier
+                                .horizontalScroll(rememberScrollState())
+                                .fillMaxWidth()
+                        ) {
+                            for (category in getAllFoodCategories()) {
+                                Text(
+                                    text = category.value,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.secondary,
+                                    modifier = Modifier.padding(8.dp)
+                                )
+                            }
+                        }
                     }
+
 
                 }
             }
