@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.models.RecipeEntity
 import com.example.domain.repositories.RecipeRepository
+import com.example.newrecipeapp.components.FoodCategory
+import com.example.newrecipeapp.components.getFoodCategory
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,6 +23,8 @@ class RecipeListViewModel @Inject constructor(
 
     val query = MutableStateFlow<String>("")
 
+    val selectedCategory : MutableStateFlow<FoodCategory?> = MutableStateFlow<FoodCategory?>(null)
+
     init {
         viewModelScope.launch{
             val result = repository.search(
@@ -34,14 +38,19 @@ class RecipeListViewModel @Inject constructor(
     fun onQueryChange(query:String){
         this.query.value = query
     }
-    fun searchRecipes(query: String){
+    fun searchRecipes(){
         viewModelScope.launch {
             val result = repository.search(
                 token = "Token 9c8b06d329136da358c2d00e76946b0111ce2c48",
                 page = 1 ,
-                query = query
+                query = query.value
             )
             _recipes.value = result!!
         }
+    }
+    fun onSelectedCategoryChanged(category:String){
+        val newCategory = getFoodCategory(category)
+        selectedCategory.value = newCategory
+        onQueryChange(category)
     }
 }
