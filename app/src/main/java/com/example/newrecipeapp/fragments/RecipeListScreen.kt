@@ -1,10 +1,14 @@
 package com.example.newrecipeapp.fragments
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -13,6 +17,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -45,26 +51,40 @@ fun RecipeListScreen(viewModel: RecipeListViewModel = hiltViewModel()) {
                     text = "Recipe List",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(top = 32.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
+                    modifier = Modifier.padding(
+                        top = 32.dp,
+                        start = 16.dp,
+                        end = 16.dp,
+                        bottom = 16.dp
+                    )
                 )
             }
 
-            item{
-                Surface(
-                    modifier = Modifier.fillMaxWidth(),
-                    color = MaterialTheme.colorScheme.primary,
-                    shadowElevation = 8.dp
+            item {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp) // Add outer padding for better spacing
                 ) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth()
+                    // TextField with elevation and rounded corners
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .shadow(
+                                elevation = 8.dp,
+                                shape = RoundedCornerShape(12.dp) // Rounded corners
+                            )
+                            .background(
+                                color = MaterialTheme.colorScheme.surface,
+                                shape = RoundedCornerShape(12.dp) // Match shadow shape
+                            )
                     ) {
                         TextField(
                             value = query,
                             onValueChange = { viewModel.onQueryChange(it) },
                             placeholder = { Text("Enter text here") },
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp),
+                                .fillMaxWidth(),
                             label = { Text(text = "Search") },
                             keyboardOptions = KeyboardOptions(
                                 keyboardType = KeyboardType.Text,
@@ -84,28 +104,53 @@ fun RecipeListScreen(viewModel: RecipeListViewModel = hiltViewModel()) {
                             ),
                             textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface),
                             colors = TextFieldDefaults.colors(
-                                focusedContainerColor = MaterialTheme.colorScheme.surface,
-                                unfocusedContainerColor = MaterialTheme.colorScheme.surface
-                            )
+                                focusedContainerColor = Color.Transparent, // Make transparent to show Box background
+                                unfocusedContainerColor = Color.Transparent,
+                                disabledContainerColor = Color.Transparent,
+                                focusedIndicatorColor = Color.Transparent, // Removes the black line
+                                unfocusedIndicatorColor = Color.Transparent, // Removes the black line
+                            ),
+                            shape = RoundedCornerShape(12.dp) // TextField inner shape
                         )
+                    }
 
+                    Spacer(modifier = Modifier.height(16.dp)) // Add spacing between TextField and Row
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
                         Row(
                             modifier = Modifier
                                 .horizontalScroll(rememberScrollState())
                                 .fillMaxWidth()
                         ) {
                             for (category in getAllFoodCategories()) {
-                                Text(
-                                    text = category.value,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.secondary,
-                                    modifier = Modifier.padding(8.dp)
-                                )
+                                Box(
+                                    modifier = Modifier
+                                        .padding(end = 8.dp) // Space between items
+                                        .shadow(
+                                            elevation = 2.dp,
+                                            shape = RoundedCornerShape(8.dp)
+                                        )
+                                        .background(
+                                            color = MaterialTheme.colorScheme.surface,
+                                            shape = RoundedCornerShape(8.dp)
+                                        ).clickable(onClick = {})
+                                        .fillMaxWidth()
+                                ) {
+                                    Text(
+                                        text = category.value,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.secondary,
+                                        modifier = Modifier.padding(
+                                            horizontal = 12.dp,
+                                            vertical = 8.dp
+                                        )
+                                    )
+                                }
                             }
                         }
                     }
-
-
                 }
             }
 
