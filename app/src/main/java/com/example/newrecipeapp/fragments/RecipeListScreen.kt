@@ -28,7 +28,7 @@ fun RecipeListScreen(viewModel: RecipeListViewModel = hiltViewModel()) {
     val recipes = viewModel.recipes.collectAsState().value
     val query = viewModel.query.collectAsState().value
     val keyboardController = LocalSoftwareKeyboardController.current
-
+    val selectedCategory = viewModel.selectedCategory.collectAsState().value
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { padding ->
@@ -74,7 +74,7 @@ fun RecipeListScreen(viewModel: RecipeListViewModel = hiltViewModel()) {
                         SearchTextField(
                             query = query,
                             onQueryChange = { viewModel.onQueryChange(it) },
-                            onSearch = { viewModel.searchRecipes(query) },
+                            onSearch = { viewModel.searchRecipes() },
                             keyboardController = keyboardController
                         )
                     }
@@ -91,10 +91,10 @@ fun RecipeListScreen(viewModel: RecipeListViewModel = hiltViewModel()) {
                         ) {
                             for (category in getAllFoodCategories()) {
                                 FoodCategoryChip(
+                                    isSelected = selectedCategory == category,
                                     foodCategory = category,
-                                    onClick = {
-                                        viewModel.onQueryChange(category.value)
-                                    }
+                                    onExecuteSearch = viewModel::searchRecipes,
+                                    onSelectedCategoryChanged = { viewModel.onSelectedCategoryChanged(it)}
                                 )
                             }
                         }
