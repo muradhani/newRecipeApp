@@ -1,15 +1,25 @@
 package com.example.newrecipeapp.fragments
 
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -22,6 +32,7 @@ import com.example.newrecipeapp.components.RecipeCard
 import com.example.newrecipeapp.components.SearchTextField
 import com.example.newrecipeapp.components.getAllFoodCategories
 import com.example.newrecipeapp.viewModels.RecipeListViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun RecipeListScreen(viewModel: RecipeListViewModel = hiltViewModel()) {
@@ -29,13 +40,22 @@ fun RecipeListScreen(viewModel: RecipeListViewModel = hiltViewModel()) {
     val query = viewModel.query.collectAsState().value
     val keyboardController = LocalSoftwareKeyboardController.current
     val selectedCategory = viewModel.selectedCategory.collectAsState().value
+    val scrollState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
+    val showScrollToTop by remember {
+        derivedStateOf {
+            scrollState.firstVisibleItemIndex > 5 // Show button when not at top
+        }
+    }
+
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { padding ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
+                .padding(padding),
+            state = scrollState
         ) {
             // Header (Title)
             item {
@@ -110,6 +130,31 @@ fun RecipeListScreen(viewModel: RecipeListViewModel = hiltViewModel()) {
             // List of Recipes
             itemsIndexed(recipes) { _, recipe ->
                 RecipeCard(recipe, onClick = { })
+            }
+        }
+        if (showScrollToTop) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 40.dp),
+                contentAlignment = Alignment.TopCenter
+            ) {
+                IconButton(
+                    onClick = {
+                        coroutineScope.launch {
+                            scrollState.animateScrollToItem(index = 0)
+                        }
+                    },
+                    modifier = Modifier
+                        .size(40.dp)
+                        .background(MaterialTheme.colorScheme.surface, CircleShape)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.KeyboardArrowUp,
+                        contentDescription = "Scroll to top",
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
             }
         }
     }
