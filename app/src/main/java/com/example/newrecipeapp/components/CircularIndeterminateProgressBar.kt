@@ -25,7 +25,7 @@ fun CircularInterminateProgressBar(
     if (isDisplayed) {
         Box(
             modifier = Modifier
-                .wrapContentSize()
+                .fillMaxWidth()
                 .background(Color.Transparent), // Optional: Add background if needed
             contentAlignment = Alignment.Center
         ) {

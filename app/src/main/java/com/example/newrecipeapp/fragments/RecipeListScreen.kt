@@ -27,10 +27,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.newrecipeapp.components.CircularInterminateProgressBar
 import com.example.newrecipeapp.components.FoodCategoryChip
 import com.example.newrecipeapp.components.RecipeCard
 import com.example.newrecipeapp.components.SearchTextField
 import com.example.newrecipeapp.components.getAllFoodCategories
+import com.example.newrecipeapp.uiStates.RecipeListScreenStates
 import com.example.newrecipeapp.viewModels.RecipeListViewModel
 import kotlinx.coroutines.launch
 
@@ -127,9 +129,19 @@ fun RecipeListScreen(viewModel: RecipeListViewModel = hiltViewModel()) {
                 Spacer(modifier = Modifier.height(10.dp))
             }
 
-            // List of Recipes
-            itemsIndexed(recipes) { _, recipe ->
-                RecipeCard(recipe, onClick = { })
+            when (recipes) {
+                is RecipeListScreenStates.Loading -> {
+                    item{
+                        CircularInterminateProgressBar(true)
+                    }
+                }
+                is RecipeListScreenStates.Success -> {
+                    itemsIndexed(recipes.recipes) { _, recipe ->
+                        RecipeCard(recipe, onClick = { })
+                    }
+                }
+
+                is RecipeListScreenStates.Error -> TODO()
             }
         }
         if (showScrollToTop) {
@@ -159,3 +171,4 @@ fun RecipeListScreen(viewModel: RecipeListViewModel = hiltViewModel()) {
         }
     }
 }
+
