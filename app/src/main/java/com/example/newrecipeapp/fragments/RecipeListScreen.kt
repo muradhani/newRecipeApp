@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
@@ -129,20 +130,7 @@ fun RecipeListScreen(viewModel: RecipeListViewModel = hiltViewModel()) {
                 Spacer(modifier = Modifier.height(10.dp))
             }
 
-            when (recipes) {
-                is RecipeListScreenStates.Loading -> {
-                    item{
-                        CircularInterminateProgressBar(true)
-                    }
-                }
-                is RecipeListScreenStates.Success -> {
-                    itemsIndexed(recipes.recipes) { _, recipe ->
-                        RecipeCard(recipe, onClick = { })
-                    }
-                }
-
-                is RecipeListScreenStates.Error -> TODO()
-            }
+            displayResult(recipes)
         }
         if (showScrollToTop) {
             Box(
@@ -172,3 +160,19 @@ fun RecipeListScreen(viewModel: RecipeListViewModel = hiltViewModel()) {
     }
 }
 
+fun LazyListScope.displayResult(recipesState : RecipeListScreenStates) {
+    when (recipesState) {
+        is RecipeListScreenStates.Loading -> {
+            item{
+                CircularInterminateProgressBar(true)
+            }
+        }
+        is RecipeListScreenStates.Success -> {
+            itemsIndexed(recipesState.recipes) { _, recipe ->
+                RecipeCard(recipe, onClick = { })
+            }
+        }
+
+        is RecipeListScreenStates.Error -> TODO()
+    }
+}
