@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
@@ -27,10 +28,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.newrecipeapp.components.CircularInterminateProgressBar
 import com.example.newrecipeapp.components.FoodCategoryChip
 import com.example.newrecipeapp.components.RecipeCard
 import com.example.newrecipeapp.components.SearchTextField
 import com.example.newrecipeapp.components.getAllFoodCategories
+import com.example.newrecipeapp.uiStates.RecipeListScreenStates
 import com.example.newrecipeapp.viewModels.RecipeListViewModel
 import kotlinx.coroutines.launch
 
@@ -127,10 +130,7 @@ fun RecipeListScreen(viewModel: RecipeListViewModel = hiltViewModel()) {
                 Spacer(modifier = Modifier.height(10.dp))
             }
 
-            // List of Recipes
-            itemsIndexed(recipes) { _, recipe ->
-                RecipeCard(recipe, onClick = { })
-            }
+            displayRecipesList(recipes)
         }
         if (showScrollToTop) {
             Box(
@@ -157,5 +157,22 @@ fun RecipeListScreen(viewModel: RecipeListViewModel = hiltViewModel()) {
                 }
             }
         }
+    }
+}
+
+fun LazyListScope.displayRecipesList(recipesState : RecipeListScreenStates) {
+    when (recipesState) {
+        is RecipeListScreenStates.Loading -> {
+            item{
+                CircularInterminateProgressBar(true)
+            }
+        }
+        is RecipeListScreenStates.Success -> {
+            itemsIndexed(recipesState.recipes) { _, recipe ->
+                RecipeCard(recipe, onClick = { })
+            }
+        }
+
+        is RecipeListScreenStates.Error -> TODO()
     }
 }
