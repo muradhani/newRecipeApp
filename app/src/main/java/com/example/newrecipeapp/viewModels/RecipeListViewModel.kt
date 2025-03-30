@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.domain.models.RecipeEntity
 import com.example.domain.repositories.RecipeRepository
 import com.example.newrecipeapp.components.FoodCategory
+import com.example.newrecipeapp.components.getAllFoodCategories
 import com.example.newrecipeapp.components.getFoodCategory
 import com.example.newrecipeapp.uiStates.RecipeListScreenStates
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -38,6 +39,10 @@ class RecipeListViewModel @Inject constructor(
     }
     fun onQueryChange(query:String){
         this.query.value = query
+        checkIfNewQueryMatchFoodCategory(query)?.let {
+            selectedCategory.value = it
+            searchRecipes()
+        }
     }
     fun searchRecipes(){
         viewModelScope.launch {
@@ -54,5 +59,8 @@ class RecipeListViewModel @Inject constructor(
         val newCategory = getFoodCategory(category)
         selectedCategory.value = newCategory
         onQueryChange(category)
+    }
+    fun checkIfNewQueryMatchFoodCategory(query: String): FoodCategory?{
+        return getAllFoodCategories().find { category-> category.value.lowercase() == query.lowercase() }
     }
 }
