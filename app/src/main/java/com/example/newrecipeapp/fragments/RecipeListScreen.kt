@@ -130,7 +130,7 @@ fun RecipeListScreen(viewModel: RecipeListViewModel = hiltViewModel()) {
                 Spacer(modifier = Modifier.height(10.dp))
             }
 
-            displayResult(recipes)
+            displayRecipesList(recipes)
         }
         if (showScrollToTop) {
             Box(
@@ -160,7 +160,7 @@ fun RecipeListScreen(viewModel: RecipeListViewModel = hiltViewModel()) {
     }
 }
 
-fun LazyListScope.displayResult(recipesState : RecipeListScreenStates) {
+fun LazyListScope.displayRecipesList(recipesState : RecipeListScreenStates) {
     when (recipesState) {
         is RecipeListScreenStates.Loading -> {
             item{
