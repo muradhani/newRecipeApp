@@ -32,6 +32,7 @@ import com.example.newrecipeapp.components.CircularInterminateProgressBar
 import com.example.newrecipeapp.components.FoodCategoryChip
 import com.example.newrecipeapp.components.RecipeCard
 import com.example.newrecipeapp.components.SearchTextField
+import com.example.newrecipeapp.components.ShimmerRecipeCard
 import com.example.newrecipeapp.components.getAllFoodCategories
 import com.example.newrecipeapp.uiStates.RecipeListScreenStates
 import com.example.newrecipeapp.viewModels.RecipeListViewModel
@@ -163,8 +164,12 @@ fun RecipeListScreen(viewModel: RecipeListViewModel = hiltViewModel()) {
 fun LazyListScope.displayRecipesList(recipesState : RecipeListScreenStates) {
     when (recipesState) {
         is RecipeListScreenStates.Loading -> {
-            item{
-                CircularInterminateProgressBar(true)
+            item {
+                CircularInterminateProgressBar(true) // Show loading indicator
+            }
+
+            items(5) {
+                ShimmerRecipeCard() // Show 5 shimmer placeholders
             }
         }
         is RecipeListScreenStates.Success -> {
