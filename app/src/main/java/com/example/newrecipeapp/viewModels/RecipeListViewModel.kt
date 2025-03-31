@@ -43,6 +43,8 @@ class RecipeListViewModel @Inject constructor(
         checkIfNewQueryMatchFoodCategory(query)?.let {
             selectedCategory.value = it
             searchRecipes()
+        } ?: run {
+            selectedCategory.value = null
         }
     }
     fun searchRecipes() {
