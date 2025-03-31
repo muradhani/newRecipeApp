@@ -10,6 +10,7 @@ import com.example.newrecipeapp.components.getFoodCategory
 import com.example.newrecipeapp.uiStates.RecipeListScreenStates
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,7 +27,7 @@ class RecipeListViewModel @Inject constructor(
     val query = MutableStateFlow<String>("")
 
     val selectedCategory : MutableStateFlow<FoodCategory?> = MutableStateFlow<FoodCategory?>(null)
-
+    private var searchJob: Job? = null
     init {
         viewModelScope.launch{
             val result = repository.search(
@@ -44,12 +45,14 @@ class RecipeListViewModel @Inject constructor(
             searchRecipes()
         }
     }
-    fun searchRecipes(){
-        viewModelScope.launch {
+    fun searchRecipes() {
+        searchJob?.cancel()
+
+        searchJob = viewModelScope.launch {
             _recipes.value = RecipeListScreenStates.Loading
             val result = repository.search(
                 token = "Token 9c8b06d329136da358c2d00e76946b0111ce2c48",
-                page = 1 ,
+                page = 1,
                 query = query.value
             )
             _recipes.value = RecipeListScreenStates.Success(result!!)
